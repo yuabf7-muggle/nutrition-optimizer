@@ -253,7 +253,7 @@
         
         .product-nutrient-row {
             display: grid;
-            grid-template-columns: 2fr 1fr auto;
+            grid-template-columns: 2fr 1fr 80px auto;
             gap: 10px;
             margin-bottom: 10px;
             align-items: end;
@@ -333,7 +333,8 @@
             <h2>步驟 2：新增保健食品</h2>
             <p style="color: #6c757d; margin-bottom: 15px;">
                 💡 <strong>填寫提示：</strong>輸入產品的總價、總顆數，以及<strong>每一顆</strong>的營養素含量（不是每日總量）。
-                系統會自動計算每顆成本，並在步驟3建議您每天要吃幾顆。
+                系統會自動計算每顆成本，並在步驟3建議您每天要吃幾顆。<br>
+                <span style="color: #28a745;">✨ 可以自由輸入任何營養素，不限於步驟1設定的項目。產品額外包含的營養素會在方案比較時一併顯示。</span>
             </p>
             <div class="form-group">
                 <label>產品名稱</label>
@@ -588,40 +589,47 @@
             const div = document.createElement('div');
             div.className = 'product-nutrient-row';
             
-            // 取得已設定的營養素名稱作為選項
+            // 取得已設定的營養素名稱作為建議選項
             const nutrientOptions = Object.keys(requirements).length > 0 
-                ? Object.keys(requirements).map(name => `<option value="${name}">${name}</option>`).join('')
-                : '<option value="">請先設定營養素需求</option>';
+                ? Object.keys(requirements).map(name => `<option value="${name}">`).join('')
+                : '';
             
             div.innerHTML = `
-                <select id="prod_nutrient_${id}" class="product-nutrient-select">
-                    <option value="">選擇營養素</option>
+                <input type="text" 
+                       id="prod_nutrient_${id}" 
+                       class="product-nutrient-input" 
+                       list="nutrient-suggestions-${id}"
+                       placeholder="營養素名稱（例如：維他命C）"
+                       style="width: 100%; padding: 10px; border: 2px solid #dee2e6; border-radius: 5px;">
+                <datalist id="nutrient-suggestions-${id}">
                     ${nutrientOptions}
-                </select>
+                </datalist>
                 <input type="number" id="prod_amount_${id}" placeholder="含量" step="0.01">
+                <select id="prod_unit_${id}">
+                    <option value="mg">mg</option>
+                    <option value="μg">μg</option>
+                    <option value="IU">IU</option>
+                    <option value="g">g</option>
+                </select>
                 <button class="danger" onclick="this.parentElement.remove()">✕</button>
             `;
             container.appendChild(div);
         }
         
-        // 更新所有產品營養素選單
+        // 更新所有產品營養素建議列表
         function updateProductNutrientSelects() {
-            const selects = document.querySelectorAll('.product-nutrient-select');
+            const inputs = document.querySelectorAll('.product-nutrient-input');
             
-            // 取得已設定的營養素名稱作為選項
-            const nutrientOptions = Object.keys(requirements).length > 0 
-                ? Object.keys(requirements).map(name => `<option value="${name}">${name}</option>`).join('')
-                : '<option value="">請先設定營養素需求</option>';
-            
-            selects.forEach(select => {
-                const currentValue = select.value;
-                select.innerHTML = `
-                    <option value="">選擇營養素</option>
-                    ${nutrientOptions}
-                `;
-                // 嘗試恢復之前選擇的值
-                if (currentValue && requirements[currentValue]) {
-                    select.value = currentValue;
+            // 為每個輸入框更新 datalist
+            inputs.forEach((input, index) => {
+                const datalistId = input.getAttribute('list');
+                const datalist = document.getElementById(datalistId);
+                
+                if (datalist) {
+                    const nutrientOptions = Object.keys(requirements).length > 0 
+                        ? Object.keys(requirements).map(name => `<option value="${name}">`).join('')
+                        : '';
+                    datalist.innerHTML = nutrientOptions;
                 }
             });
         }
@@ -648,15 +656,24 @@
             }
             
             const nutrients = {};
+            const nutrientUnits = {};
             const inputs = document.querySelectorAll('[id^="prod_nutrient_"]');
             
             inputs.forEach((input) => {
                 const id = input.id.split('_')[2];
-                const nutrient = document.getElementById(`prod_nutrient_${id}`).value;
-                const amount = parseFloat(document.getElementById(`prod_amount_${id}`).value);
+                const nutrientInput = document.getElementById(`prod_nutrient_${id}`);
+                const amountInput = document.getElementById(`prod_amount_${id}`);
+                const unitSelect = document.getElementById(`prod_unit_${id}`);
                 
-                if (nutrient && !isNaN(amount)) {
-                    nutrients[nutrient] = amount;
+                if (nutrientInput && amountInput && unitSelect) {
+                    const nutrient = nutrientInput.value.trim();
+                    const amount = parseFloat(amountInput.value);
+                    const unit = unitSelect.value;
+                    
+                    if (nutrient && !isNaN(amount)) {
+                        nutrients[nutrient] = amount;
+                        nutrientUnits[nutrient] = unit;
+                    }
                 }
             });
             
@@ -673,7 +690,8 @@
                 totalPrice,
                 totalServings,
                 pricePerServing,
-                nutrients 
+                nutrients,
+                nutrientUnits
             };
             
             products[productId] = product;
@@ -716,6 +734,12 @@
                 const lastId = productNutrientCount - 1;
                 document.getElementById(`prod_nutrient_${lastId}`).value = nutrient;
                 document.getElementById(`prod_amount_${lastId}`).value = amount;
+                // 設定單位
+                if (product.nutrientUnits && product.nutrientUnits[nutrient]) {
+                    document.getElementById(`prod_unit_${lastId}`).value = product.nutrientUnits[nutrient];
+                } else if (requirements[nutrient]) {
+                    document.getElementById(`prod_unit_${lastId}`).value = requirements[nutrient].unit;
+                }
             });
             
             // 捲動到表單
@@ -768,9 +792,10 @@
                             <p style="color: #6c757d; font-size: 0.9em;">💡 設定需求後可計算建議用量</p>
                         `}
                         <ul style="margin-top: 10px; font-size: 0.9em;">
-                            ${Object.entries(p.nutrients).map(([n, a]) => 
-                                `<li>${n}: ${a} ${requirements[n]?.unit || ''}/顆</li>`
-                            ).join('')}
+                            ${Object.entries(p.nutrients).map(([n, a]) => {
+                                const unit = (p.nutrientUnits && p.nutrientUnits[n]) || requirements[n]?.unit || 'mg';
+                                return `<li>${n}: ${a} ${unit}/顆</li>`;
+                            }).join('')}
                         </ul>
                         <div style="display: flex; gap: 5px; margin-top: 10px;">
                             <button onclick="editProduct('${p.id}')" style="flex: 1; background: #28a745;">編輯</button>
