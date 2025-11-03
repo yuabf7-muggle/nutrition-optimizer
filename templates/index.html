@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>營養素補充最佳化工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2em;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .section h2 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #495057;
+            font-weight: 500;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button.secondary {
+            background: #6c757d;
+        }
+        
+        button.secondary:hover {
+            background: #5a6268;
+        }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        button.danger:hover {
+            background: #c82333;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .requirement-item,
+        .product-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+        }
+        
+        .requirement-item h4,
+        .product-item h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .product-item {
+            position: relative;
+        }
+        
+        .product-checkbox {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .analysis-result {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .status-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .status-box.success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+        
+        .status-box.warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+        }
+        
+        .status-box.danger {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+        }
+        
+        .status-box h3 {
+            margin-bottom: 10px;
+        }
+        
+        .nutrient-list {
+            list-style: none;
+        }
+        
+        .nutrient-list li {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 5px;
+        }
+        
+        .solutions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .solutions-table th,
+        .solutions-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .solutions-table th {
+            background: #667eea;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .solutions-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .cost-highlight {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .completeness-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .completeness-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .flex-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .nutrient-input-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: end;
+        }
+        
+        .product-nutrient-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: end;
+        }
+        
+        #currentAnalysis {
+            position: sticky;
+            top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌿 營養素補充最佳化工具</h1>
+        
+        <!-- 步驟1: 設定營養素需求 -->
+        <div class="section">
+            <h2>步驟 1：設定營養素需求範圍</h2>
+            <div id="requirementsInputs"></div>
+            <button onclick="addRequirementInput()">➕ 新增營養素</button>
+            <button onclick="saveRequirements()" style="margin-left: 10px;">💾 儲存需求</button>
+            <button onclick="clearRequirementForm()" class="secondary" style="margin-left: 10px;">🔄 清空表單</button>
+            
+            <div id="requirementsList" style="margin-top: 20px;"></div>
+        </div>
+        
+        <!-- 步驟2: 新增產品 -->
+        <div class="section">
+            <h2>步驟 2：新增保健食品</h2>
+            <div class="form-group">
+                <label>產品名稱</label>
+                <input type="text" id="productName" placeholder="例如：甲款綜合維他命">
+            </div>
+            
+            <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="form-group">
+                    <label>總價格（元）<span style="color: #dc3545;">*</span></label>
+                    <input type="number" id="productTotalPrice" placeholder="例如：500" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label>總顆數/總份數<span style="color: #dc3545;">*</span></label>
+                    <input type="number" id="productTotalServings" placeholder="例如：60" step="1">
+                </div>
+            </div>
+            
+            <div style="background: #e7f3ff; padding: 12px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea;">
+                <p style="margin: 0; color: #004085;">每顆成本：<span id="pricePerServing" style="font-weight: bold;">NT$ 0</span></p>
+            </div>
+            
+            <div class="form-group">
+                <label>營養素成分（每顆/每份含量）</label>
+                <small style="color: #6c757d; display: block; margin-bottom: 10px;">💡 請輸入「每一顆」的營養素含量，系統會根據您的需求自動計算每天要吃幾顆</small>
+                <div id="productNutrients"></div>
+                <button onclick="addProductNutrient()">➕ 新增成分</button>
+            </div>
+            <button onclick="saveProduct()">💾 新增產品</button>
+            <button onclick="cancelEdit()" class="secondary" style="margin-left: 10px;">🔄 清空表單</button>
+            
+            <div id="productsList" style="margin-top: 20px;"></div>
+        </div>
+        
+        <!-- 步驟3: 分析組合 -->
+        <div class="section">
+            <h2>步驟 3：選擇產品組合並分析</h2>
+            <div id="productsSelection"></div>
+            <button onclick="analyzeSelection()" style="margin-top: 15px;">🔍 分析組合</button>
+            <button onclick="saveAsSolution()" style="margin-left: 10px;">💾 儲存為方案</button>
+            
+            <div id="currentAnalysis"></div>
+        </div>
+        
+        <!-- 步驟4: 方案比較 -->
+        <div class="section">
+            <h2>步驟 4：方案比較</h2>
+            <div id="solutionsList"></div>
+        </div>
+    </div>
+    
+    <script>
+        let requirements = {};
+        let products = {};
+        let currentAnalysisResult = null;
+        let requirementInputCount = 0;
+        let productNutrientCount = 0;
+        let editingProductId = null;
+        let editingRequirementName = null;
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRequirements().then(() => {
+                // 等需求載入完成後再新增產品營養素欄位
+                addProductNutrient();
+            });
+            loadProducts();
+            loadSolutions();
+            addRequirementInput();
+            
+            // 監聽價格變化以更新每顆成本
+            document.getElementById('productTotalPrice').addEventListener('input', updatePricePerServing);
+            document.getElementById('productTotalServings').addEventListener('input', updatePricePerServing);
+        });
+        
+        // 更新每顆成本
+        function updatePricePerServing() {
+            const totalPrice = parseFloat(document.getElementById('productTotalPrice').value) || 0;
+            const totalServings = parseFloat(document.getElementById('productTotalServings').value) || 0;
+            const pricePerServing = totalServings > 0 ? totalPrice / totalServings : 0;
+            document.getElementById('pricePerServing').textContent = 'NT$ ' + pricePerServing.toFixed(2);
+        }
+        
+        // 新增營養素需求輸入欄位
+        function addRequirementInput() {
+            const container = document.getElementById('requirementsInputs');
+            const id = requirementInputCount++;
+            const div = document.createElement('div');
+            div.className = 'nutrient-input-row';
+            div.innerHTML = `
+                <input type="text" id="req_name_${id}" placeholder="營養素名稱（例如：維他命B6）">
+                <input type="number" id="req_min_${id}" placeholder="最小值" step="0.01">
+                <input type="number" id="req_max_${id}" placeholder="最大值" step="0.01">
+                <select id="req_unit_${id}">
+                    <option value="mg">毫克(mg)</option>
+                    <option value="μg">微克(μg)</option>
+                    <option value="IU">國際單位(IU)</option>
+                    <option value="g">公克(g)</option>
+                </select>
+                <button class="danger" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.appendChild(div);
+        }
+        
+        // 儲存營養素需求
+        function saveRequirements() {
+            requirements = {};
+            const inputs = document.querySelectorAll('[id^="req_name_"]');
+            
+            inputs.forEach((input) => {
+                const id = input.id.split('_')[2];
+                const name = document.getElementById(`req_name_${id}`).value.trim();
+                const min = parseFloat(document.getElementById(`req_min_${id}`).value);
+                const max = parseFloat(document.getElementById(`req_max_${id}`).value);
+                const unit = document.getElementById(`req_unit_${id}`).value;
+                
+                if (name && !isNaN(min) && !isNaN(max)) {
+                    requirements[name] = { min, max, unit };
+                }
+            });
+            
+            fetch('/api/requirements', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requirements)
+            })
+            .then(() => {
+                displayRequirements();
+                // 更新產品營養素選單
+                updateProductNutrientSelects();
+                alert('需求已儲存！');
+            });
+        }
+        
+        // 載入並顯示需求
+        function loadRequirements() {
+            return fetch('/api/requirements')
+            .then(res => res.json())
+            .then(data => {
+                requirements = data;
+                displayRequirements();
+            });
+        }
+        
+        function displayRequirements() {
+            const container = document.getElementById('requirementsList');
+            if (Object.keys(requirements).length === 0) {
+                container.innerHTML = '<p style="color: #6c757d;">尚未設定需求</p>';
+                return;
+            }
+            
+            container.innerHTML = '<div class="grid">' + 
+                Object.entries(requirements).map(([name, req]) => `
+                    <div class="requirement-item">
+                        <h4>${name}</h4>
+                        <p>範圍：${req.min} - ${req.max} ${req.unit}</p>
+                        <div style="display: flex; gap: 5px; margin-top: 10px;">
+                            <button onclick="editRequirement('${name}')" style="flex: 1; background: #28a745; font-size: 0.85em; padding: 8px;">編輯</button>
+                            <button class="danger" onclick="deleteRequirement('${name}')" style="flex: 1; font-size: 0.85em; padding: 8px;">刪除</button>
+                        </div>
+                    </div>
+                `).join('') + '</div>';
+        }
+        
+        // 編輯需求
+        function editRequirement(name) {
+            const req = requirements[name];
+            if (!req) return;
+            
+            editingRequirementName = name;
+            
+            // 清空輸入區域並新增一個編輯欄位
+            document.getElementById('requirementsInputs').innerHTML = '';
+            requirementInputCount = 0;
+            addRequirementInput();
+            
+            const id = requirementInputCount - 1;
+            document.getElementById(`req_name_${id}`).value = name;
+            document.getElementById(`req_min_${id}`).value = req.min;
+            document.getElementById(`req_max_${id}`).value = req.max;
+            document.getElementById(`req_unit_${id}`).value = req.unit;
+            
+            // 禁止修改名稱（因為會影響已有產品）
+            document.getElementById(`req_name_${id}`).disabled = true;
+            document.getElementById(`req_name_${id}`).style.background = '#e9ecef';
+            
+            // 改變按鈕文字
+            const saveBtn = document.querySelector('.section:nth-child(1) button[onclick="saveRequirements()"]');
+            saveBtn.textContent = '💾 更新需求';
+            saveBtn.style.background = '#28a745';
+            
+            // 捲動到表單
+            document.querySelector('.section:nth-child(1)').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // 刪除需求
+        function deleteRequirement(name) {
+            if (!confirm(`確定要刪除「${name}」嗎？\n注意：這會影響已新增的產品。`)) return;
+            
+            delete requirements[name];
+            
+            fetch('/api/requirements', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requirements)
+            })
+            .then(() => {
+                displayRequirements();
+                updateProductNutrientSelects();
+            });
+        }
+        
+        // 清空需求表單
+        function clearRequirementForm() {
+            document.getElementById('requirementsInputs').innerHTML = '';
+            requirementInputCount = 0;
+            addRequirementInput();
+            editingRequirementName = null;
+            
+            const saveBtn = document.querySelector('.section:nth-child(1) button[onclick="saveRequirements()"]');
+            saveBtn.textContent = '💾 儲存需求';
+            saveBtn.style.background = '#667eea';
+        }
+        
+        // 新增產品營養素輸入欄位
+        function addProductNutrient() {
+            const container = document.getElementById('productNutrients');
+            const id = productNutrientCount++;
+            const div = document.createElement('div');
+            div.className = 'product-nutrient-row';
+            
+            // 取得已設定的營養素名稱作為選項
+            const nutrientOptions = Object.keys(requirements).length > 0 
+                ? Object.keys(requirements).map(name => `<option value="${name}">${name}</option>`).join('')
+                : '<option value="">請先設定營養素需求</option>';
+            
+            div.innerHTML = `
+                <select id="prod_nutrient_${id}" class="product-nutrient-select">
+                    <option value="">選擇營養素</option>
+                    ${nutrientOptions}
+                </select>
+                <input type="number" id="prod_amount_${id}" placeholder="含量" step="0.01">
+                <button class="danger" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.appendChild(div);
+        }
+        
+        // 更新所有產品營養素選單
+        function updateProductNutrientSelects() {
+            const selects = document.querySelectorAll('.product-nutrient-select');
+            
+            // 取得已設定的營養素名稱作為選項
+            const nutrientOptions = Object.keys(requirements).length > 0 
+                ? Object.keys(requirements).map(name => `<option value="${name}">${name}</option>`).join('')
+                : '<option value="">請先設定營養素需求</option>';
+            
+            selects.forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = `
+                    <option value="">選擇營養素</option>
+                    ${nutrientOptions}
+                `;
+                // 嘗試恢復之前選擇的值
+                if (currentValue && requirements[currentValue]) {
+                    select.value = currentValue;
+                }
+            });
+        }
+        
+        // 儲存產品
+        function saveProduct() {
+            const name = document.getElementById('productName').value.trim();
+            const totalPrice = parseFloat(document.getElementById('productTotalPrice').value);
+            const totalServings = parseFloat(document.getElementById('productTotalServings').value);
+            
+            if (!name) {
+                alert('請填寫產品名稱');
+                return;
+            }
+            
+            if (isNaN(totalPrice) || totalPrice <= 0) {
+                alert('請填寫正確的總價格');
+                return;
+            }
+            
+            if (isNaN(totalServings) || totalServings <= 0) {
+                alert('請填寫正確的總顆數');
+                return;
+            }
+            
+            const nutrients = {};
+            const inputs = document.querySelectorAll('[id^="prod_nutrient_"]');
+            
+            inputs.forEach((input) => {
+                const id = input.id.split('_')[2];
+                const nutrient = document.getElementById(`prod_nutrient_${id}`).value;
+                const amount = parseFloat(document.getElementById(`prod_amount_${id}`).value);
+                
+                if (nutrient && !isNaN(amount)) {
+                    nutrients[nutrient] = amount;
+                }
+            });
+            
+            if (Object.keys(nutrients).length === 0) {
+                alert('請至少新增一個營養素成分');
+                return;
+            }
+            
+            const pricePerServing = totalPrice / totalServings;
+            const productId = editingProductId || Date.now().toString();
+            const product = { 
+                id: productId, 
+                name, 
+                totalPrice,
+                totalServings,
+                pricePerServing,
+                nutrients 
+            };
+            
+            fetch('/api/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(product)
+            })
+            .then(() => {
+                products[productId] = product;
+                displayProducts();
+                displayProductSelection();
+                clearProductForm();
+                alert(editingProductId ? '產品已更新！' : '產品已新增！');
+                editingProductId = null;
+            });
+        }
+        
+        // 清空產品表單
+        function clearProductForm() {
+            document.getElementById('productName').value = '';
+            document.getElementById('productTotalPrice').value = '';
+            document.getElementById('productTotalServings').value = '';
+            document.getElementById('productNutrients').innerHTML = '';
+            document.getElementById('pricePerServing').textContent = 'NT$ 0';
+            productNutrientCount = 0;
+            addProductNutrient();
+        }
+        
+        // 編輯產品
+        function editProduct(productId) {
+            const product = products[productId];
+            if (!product) return;
+            
+            editingProductId = productId;
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productTotalPrice').value = product.totalPrice;
+            document.getElementById('productTotalServings').value = product.totalServings;
+            updatePricePerServing();
+            
+            // 清空並重新填入營養素
+            document.getElementById('productNutrients').innerHTML = '';
+            productNutrientCount = 0;
+            
+            Object.entries(product.nutrients).forEach(([nutrient, amount]) => {
+                addProductNutrient();
+                const lastId = productNutrientCount - 1;
+                document.getElementById(`prod_nutrient_${lastId}`).value = nutrient;
+                document.getElementById(`prod_amount_${lastId}`).value = amount;
+            });
+            
+            // 捲動到表單
+            document.querySelector('.section:nth-child(2)').scrollIntoView({ behavior: 'smooth' });
+            
+            // 改變按鈕文字
+            const saveBtn = document.querySelector('.section:nth-child(2) button[onclick="saveProduct()"]');
+            saveBtn.textContent = '💾 更新產品';
+            saveBtn.style.background = '#28a745';
+        }
+        
+        // 取消編輯
+        function cancelEdit() {
+            editingProductId = null;
+            clearProductForm();
+            const saveBtn = document.querySelector('.section:nth-child(2) button[onclick="saveProduct()"]');
+            saveBtn.textContent = '💾 新增產品';
+            saveBtn.style.background = '#667eea';
+        }
+        
+        // 載入並顯示產品
+        function loadProducts() {
+            fetch('/api/products')
+            .then(res => res.json())
+            .then(data => {
+                products = {};
+                data.forEach(p => products[p.id] = p);
+                displayProducts();
+                displayProductSelection();
+            });
+        }
+        
+        function displayProducts() {
+            const container = document.getElementById('productsList');
+            if (Object.keys(products).length === 0) {
+                container.innerHTML = '<p style="color: #6c757d;">尚未新增產品</p>';
+                return;
+            }
+            
+            container.innerHTML = '<div class="grid">' + 
+                Object.values(products).map(p => {
+                    // 計算建議用量（基於需求）
+                    let suggestedServings = calculateSuggestedServings(p.nutrients);
+                    let dailyCost = p.pricePerServing * suggestedServings;
+                    let daysSupply = suggestedServings > 0 ? Math.floor(p.totalServings / suggestedServings) : 0;
+                    
+                    return `
+                    <div class="product-item">
+                        <h4>${p.name}</h4>
+                        <p style="color: #6c757d;">總價 NT$ ${p.totalPrice}（${p.totalServings} 顆）</p>
+                        <p style="color: #667eea; font-weight: bold;">每顆 NT$ ${p.pricePerServing.toFixed(2)}</p>
+                        ${suggestedServings > 0 ? `
+                            <p style="color: #28a745; font-weight: bold;">建議每日 ${suggestedServings} 顆 → NT$ ${dailyCost.toFixed(2)}/日</p>
+                            <p style="font-size: 0.9em; color: #6c757d;">可吃約 ${daysSupply} 天</p>
+                        ` : `
+                            <p style="color: #6c757d; font-size: 0.9em;">💡 設定需求後可計算建議用量</p>
+                        `}
+                        <ul style="margin-top: 10px; font-size: 0.9em;">
+                            ${Object.entries(p.nutrients).map(([n, a]) => 
+                                `<li>${n}: ${a} ${requirements[n]?.unit || ''}/顆</li>`
+                            ).join('')}
+                        </ul>
+                        <div style="display: flex; gap: 5px; margin-top: 10px;">
+                            <button onclick="editProduct('${p.id}')" style="flex: 1; background: #28a745;">編輯</button>
+                            <button class="danger" onclick="deleteProduct('${p.id}')" style="flex: 1;">刪除</button>
+                        </div>
+                    </div>
+                `;
+                }).join('') + '</div>';
+        }
+        
+        // 計算建議用量（根據需求計算每天最少要吃幾顆）
+        function calculateSuggestedServings(nutrients) {
+            if (Object.keys(requirements).length === 0) return 0;
+            
+            let maxServings = 0;
+            
+            // 找出需要最多顆數的營養素
+            for (let nutrient in nutrients) {
+                if (requirements[nutrient]) {
+                    let perServing = nutrients[nutrient];
+                    let required = requirements[nutrient].min;
+                    let servingsNeeded = Math.ceil(required / perServing * 10) / 10; // 四捨五入到0.1
+                    maxServings = Math.max(maxServings, servingsNeeded);
+                }
+            }
+            
+            return maxServings;
+        }
+        
+        function deleteProduct(productId) {
+            if (!confirm('確定要刪除此產品？')) return;
+            
+            fetch(`/api/products/${productId}`, { method: 'DELETE' })
+            .then(() => {
+                delete products[productId];
+                displayProducts();
+                displayProductSelection();
+            });
+        }
+        
+        // 顯示產品選擇
+        function displayProductSelection() {
+            const container = document.getElementById('productsSelection');
+            if (Object.keys(products).length === 0) {
+                container.innerHTML = '<p style="color: #6c757d;">尚未新增產品，請先新增產品</p>';
+                return;
+            }
+            
+            container.innerHTML = '<div class="grid">' + 
+                Object.values(products).map(p => {
+                    const suggestedServings = calculateSuggestedServings(p.nutrients);
+                    const defaultServings = suggestedServings > 0 ? suggestedServings : 1;
+                    
+                    return `
+                    <div class="product-item">
+                        <input type="checkbox" class="product-checkbox" value="${p.id}" onchange="analyzeSelection()">
+                        <h4>${p.name}</h4>
+                        <p style="color: #667eea; font-weight: bold;">每顆 NT$ ${p.pricePerServing.toFixed(2)}</p>
+                        <p style="font-size: 0.9em; color: #6c757d;">共 ${p.totalServings} 顆</p>
+                        
+                        <div style="margin: 10px 0; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+                            <label style="font-size: 0.9em; margin-bottom: 5px;">每日要吃幾顆？</label>
+                            <input type="number" 
+                                   id="serving_${p.id}" 
+                                   class="serving-input" 
+                                   value="${defaultServings}" 
+                                   min="0.5" 
+                                   step="0.5" 
+                                   style="width: 100%; padding: 5px;"
+                                   onchange="analyzeSelection()">
+                            ${suggestedServings > 0 ? `<small style="color: #28a745;">💡 建議 ${suggestedServings} 顆</small>` : ''}
+                        </div>
+                        
+                        <ul style="margin-top: 10px; font-size: 0.9em;">
+                            ${Object.entries(p.nutrients).map(([n, a]) => 
+                                `<li>${n}: ${a} ${requirements[n]?.unit || ''}/顆</li>`
+                            ).join('')}
+                        </ul>
+                    </div>
+                `;
+                }).join('') + '</div>';
+        }
+        
+        // 分析選擇的產品組合
+        function analyzeSelection() {
+            const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+            const selected = Array.from(checkboxes).map(cb => {
+                const productId = cb.value;
+                const dailyServing = parseFloat(document.getElementById(`serving_${productId}`).value) || 1;
+                return { productId, dailyServing };
+            });
+            
+            if (selected.length === 0) {
+                document.getElementById('currentAnalysis').innerHTML = '';
+                currentAnalysisResult = null;
+                return;
+            }
+            
+            fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ products: selected })
+            })
+            .then(res => res.json())
+            .then(data => {
+                currentAnalysisResult = data;
+                displayAnalysis(data);
+            });
+        }
+        
+        function displayAnalysis(data) {
+            const container = document.getElementById('currentAnalysis');
+            
+            let html = '<div class="analysis-result">';
+            html += '<h3>分析結果</h3>';
+            
+            // 完整度
+            html += `
+                <div class="completeness-bar">
+                    <div class="completeness-fill" style="width: ${data.completeness}%">
+                        ${data.completeness.toFixed(1)}% 完整
+                    </div>
+                </div>
+            `;
+            
+            // 成本資訊
+            html += `
+                <div style="background: #e7f3ff; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #667eea;">
+                    <p style="margin: 0; font-size: 1.1em;">每日成本：<span style="font-size: 1.5em; color: #667eea; font-weight: bold;">NT$ ${data.daily_cost}</span></p>
+                </div>
+            `;
+            
+            // 選擇的產品詳細資訊
+            html += '<div style="margin: 15px 0;"><strong>選擇的產品：</strong><ul style="margin-top: 10px;">';
+            data.products.forEach(p => {
+                html += `<li>${p.name} - 每日 ${p.dailyServing} 顆 (NT$ ${p.dailyCost}/日，可吃 ${p.daysSupply} 天)</li>`;
+            });
+            html += '</ul></div>';
+            
+            // 充足的營養素
+            if (Object.keys(data.analysis.sufficient).length > 0) {
+                html += '<div class="status-box success"><h3>✅ 已滿足的營養素</h3><ul class="nutrient-list">';
+                Object.entries(data.analysis.sufficient).forEach(([name, info]) => {
+                    html += `<li><strong>${name}</strong>: ${info.current} ${info.unit} (需求: ${info.min}-${info.max})</li>`;
+                });
+                html += '</ul></div>';
+            }
+            
+            // 不足的營養素
+            if (Object.keys(data.analysis.insufficient).length > 0) {
+                html += '<div class="status-box warning"><h3>⚠️ 不足的營養素（需額外補充）</h3><ul class="nutrient-list">';
+                Object.entries(data.analysis.insufficient).forEach(([name, info]) => {
+                    html += `<li><strong>${name}</strong>: 目前 ${info.current} ${info.unit}，還差 <span style="color: #dc3545; font-weight: bold;">${info.gap} ${info.unit}</span></li>`;
+                });
+                html += '</ul></div>';
+            }
+            
+            // 過量的營養素
+            if (Object.keys(data.analysis.excessive).length > 0) {
+                html += '<div class="status-box danger"><h3>❌ 過量的營養素</h3><ul class="nutrient-list">';
+                Object.entries(data.analysis.excessive).forEach(([name, info]) => {
+                    html += `<li><strong>${name}</strong>: ${info.current} ${info.unit}，超過 ${info.excess} ${info.unit}</li>`;
+                });
+                html += '</ul></div>';
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        // 儲存為方案
+        function saveAsSolution() {
+            if (!currentAnalysisResult) {
+                alert('請先分析產品組合');
+                return;
+            }
+            
+            const name = prompt('請輸入方案名稱：');
+            if (!name) return;
+            
+            const solution = {
+                name,
+                ...currentAnalysisResult
+            };
+            
+            fetch('/api/solutions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(solution)
+            })
+            .then(() => {
+                loadSolutions();
+                alert('方案已儲存！');
+            });
+        }
+        
+        // 載入並顯示方案
+        function loadSolutions() {
+            fetch('/api/solutions')
+            .then(res => res.json())
+            .then(data => {
+                displaySolutions(data);
+            });
+        }
+        
+        function displaySolutions(solutions) {
+            const container = document.getElementById('solutionsList');
+            
+            if (solutions.length === 0) {
+                container.innerHTML = '<p style="color: #6c757d;">尚未儲存任何方案</p>';
+                return;
+            }
+            
+            let html = '<table class="solutions-table"><thead><tr>';
+            html += '<th>方案名稱</th><th>產品組合</th><th>每日成本</th><th>完整度</th><th>不足項目</th><th>操作</th>';
+            html += '</tr></thead><tbody>';
+            
+            solutions.forEach(s => {
+                const insufficientCount = Object.keys(s.analysis.insufficient).length;
+                const insufficientList = Object.keys(s.analysis.insufficient).join('、');
+                
+                html += `<tr>
+                    <td><strong>${s.name}</strong></td>
+                    <td>${s.products.map(p => p.name).join('、')}</td>
+                    <td style="color: #667eea; font-weight: bold;">NT$ ${s.daily_cost}/日</td>
+                    <td>${s.completeness.toFixed(1)}%</td>
+                    <td>${insufficientCount > 0 ? insufficientList : '無'}</td>
+                    <td><button class="danger" onclick="deleteSolution(${s.id})">刪除</button></td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            
+            // 找出最便宜的每日成本
+            const minDailyCost = Math.min(...solutions.map(s => s.daily_cost));
+            const bestSolution = solutions.find(s => s.daily_cost === minDailyCost);
+            html += `<p style="margin-top: 15px; color: #667eea; font-weight: bold;">💡 最低每日成本：NT$ ${minDailyCost}/日 (${bestSolution.name})</p>`;
+            
+            container.innerHTML = html;
+        }
+        
+        function deleteSolution(solutionId) {
+            if (!confirm('確定要刪除此方案？')) return;
+            
+            fetch(`/api/solutions/${solutionId}`, { method: 'DELETE' })
+            .then(() => loadSolutions());
+        }
+    </script>
+</body>
+</html>
