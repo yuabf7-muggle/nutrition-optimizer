@@ -269,57 +269,9 @@
     <div class="container">
         <h1>🌿 營養素補充最佳化工具</h1>
         
-        <!-- 工具說明 -->
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px; color: white;">
-            <h3 style="margin: 0 0 10px 0; color: white;">💡 這個工具可以幫你做什麼？</h3>
-            <p style="margin: 5px 0; line-height: 1.6;">
-                📊 <strong>比較不同保健食品組合</strong>，找出最符合需求、成本最低的購買方案<br>
-                💰 <strong>自動計算每日成本</strong>，告訴你每天要吃幾顆才能滿足營養需求<br>
-                ⚖️ <strong>分析營養素缺口</strong>，清楚顯示哪些營養素不足、哪些過量
-            </p>
-        </div>
-        
-        <!-- 重要提示 -->
-        <div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #ffc107;">
-            <h3 style="margin: 0 0 10px 0; color: #856404;">⚠️ 使用前必讀</h3>
-            <ul style="margin: 5px 0; padding-left: 20px; color: #856404; line-height: 1.8;">
-                <li><strong>資料保存：</strong>按下「💾 儲存需求」或「💾 新增產品」後，資料會自動存在<strong>您的瀏覽器</strong>中。就算關閉網頁重新開啟，資料還會在！</li>
-                <li><strong>注意單位：</strong>填寫營養素含量時，請特別注意單位是 <strong>mg（毫克）</strong>還是 <strong>μg（微克）</strong>，1 mg = 1000 μg</li>
-                <li><strong>跨裝置使用：</strong>想在手機和電腦都使用？點擊下方「📥 匯出資料」備份，再到另一個裝置「📤 匯入資料」即可</li>
-                <li><strong>建議定期備份：</strong>清除瀏覽器資料會讓您的設定消失，建議定期匯出備份以防萬一</li>
-            </ul>
-        </div>
-        
-        <!-- 資料管理功能 -->
-        <div style="background: #e7f3ff; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #667eea;">
-            <h3 style="margin: 0 0 10px 0; color: #004085;">🗂️ 資料管理</h3>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button onclick="exportData()" style="background: #28a745; padding: 10px 20px; display: flex; align-items: center; gap: 5px;">
-                    📥 匯出資料
-                    <small style="opacity: 0.8;">(備份)</small>
-                </button>
-                <button onclick="document.getElementById('importFile').click()" style="background: #17a2b8; padding: 10px 20px; display: flex; align-items: center; gap: 5px;">
-                    📤 匯入資料
-                    <small style="opacity: 0.8;">(還原)</small>
-                </button>
-                <button onclick="clearAllData()" style="background: #dc3545; padding: 10px 20px; display: flex; align-items: center; gap: 5px;">
-                    🗑️ 清空資料
-                    <small style="opacity: 0.8;">(重新開始)</small>
-                </button>
-                <button onclick="showUnitGuide()" style="background: #6c757d; padding: 10px 20px; display: flex; align-items: center; gap: 5px;">
-                    📖 單位對照表
-                </button>
-                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
-            </div>
-        </div>
-        
         <!-- 步驟1: 設定營養素需求 -->
         <div class="section">
             <h2>步驟 1：設定營養素需求範圍</h2>
-            <p style="color: #6c757d; margin-bottom: 15px;">
-                💡 <strong>填寫提示：</strong>輸入您每日所需的營養素名稱和攝取範圍。例如：維他命B6 最小 10 mg、最大 50 mg。
-                <strong style="color: #dc3545;">特別注意單位</strong>：維他命 D、B12 通常用「微克(μg)」，其他多用「毫克(mg)」。
-            </p>
             <div id="requirementsInputs"></div>
             <button onclick="addRequirementInput()">➕ 新增營養素</button>
             <button onclick="saveRequirements()" style="margin-left: 10px;">💾 儲存需求</button>
@@ -331,10 +283,6 @@
         <!-- 步驟2: 新增產品 -->
         <div class="section">
             <h2>步驟 2：新增保健食品</h2>
-            <p style="color: #6c757d; margin-bottom: 15px;">
-                💡 <strong>填寫提示：</strong>輸入產品的總價、總顆數，以及<strong>每一顆</strong>的營養素含量（不是每日總量）。
-                系統會自動計算每顆成本，並在步驟3建議您每天要吃幾顆。
-            </p>
             <div class="form-group">
                 <label>產品名稱</label>
                 <input type="text" id="productName" placeholder="例如：甲款綜合維他命">
@@ -370,10 +318,6 @@
         <!-- 步驟3: 分析組合 -->
         <div class="section">
             <h2>步驟 3：選擇產品組合並分析</h2>
-            <p style="color: #6c757d; margin-bottom: 15px;">
-                💡 <strong>操作說明：</strong>勾選想要的產品，系統會自動建議每天要吃幾顆。您也可以手動調整用量。
-                分析結果會告訴您：✅ 哪些營養素已滿足、⚠️ 哪些還不夠、❌ 哪些過量，以及每日總成本。
-            </p>
             <div id="productsSelection"></div>
             <button onclick="analyzeSelection()" style="margin-top: 15px;">🔍 分析組合</button>
             <button onclick="saveAsSolution()" style="margin-left: 10px;">💾 儲存為方案</button>
@@ -384,10 +328,6 @@
         <!-- 步驟4: 方案比較 -->
         <div class="section">
             <h2>步驟 4：方案比較</h2>
-            <p style="color: #6c757d; margin-bottom: 15px;">
-                💡 <strong>功能說明：</strong>將不同的產品組合儲存為方案，方便比較哪個組合最划算、最符合需求。
-                比較重點：每日成本、完整度、還缺少哪些營養素。
-            </p>
             <div id="solutionsList"></div>
         </div>
     </div>
@@ -395,7 +335,6 @@
     <script>
         let requirements = {};
         let products = {};
-        let solutions = [];
         let currentAnalysisResult = null;
         let requirementInputCount = 0;
         let productNutrientCount = 0;
@@ -495,15 +434,25 @@
                 }
             });
             
-            saveToLocalStorage();
-            displayRequirements();
-            updateProductNutrientSelects();
-            alert('需求已儲存！');
+            fetch('/api/requirements', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requirements)
+            })
+            .then(() => {
+                displayRequirements();
+                // 更新產品營養素選單
+                updateProductNutrientSelects();
+                alert('需求已儲存！');
+            });
         }
         
         // 載入並顯示需求
         function loadRequirements() {
-            return Promise.resolve().then(() => {
+            return fetch('/api/requirements')
+            .then(res => res.json())
+            .then(data => {
+                requirements = data;
                 displayRequirements();
             });
         }
@@ -564,9 +513,16 @@
             if (!confirm(`確定要刪除「${name}」嗎？\n注意：這會影響已新增的產品。`)) return;
             
             delete requirements[name];
-            saveToLocalStorage();
-            displayRequirements();
-            updateProductNutrientSelects();
+            
+            fetch('/api/requirements', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requirements)
+            })
+            .then(() => {
+                displayRequirements();
+                updateProductNutrientSelects();
+            });
         }
         
         // 清空需求表單
@@ -676,13 +632,19 @@
                 nutrients 
             };
             
-            products[productId] = product;
-            saveToLocalStorage();
-            displayProducts();
-            displayProductSelection();
-            clearProductForm();
-            alert(editingProductId ? '產品已更新！' : '產品已新增！');
-            editingProductId = null;
+            fetch('/api/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(product)
+            })
+            .then(() => {
+                products[productId] = product;
+                displayProducts();
+                displayProductSelection();
+                clearProductForm();
+                alert(editingProductId ? '產品已更新！' : '產品已新增！');
+                editingProductId = null;
+            });
         }
         
         // 清空產品表單
@@ -738,8 +700,14 @@
         
         // 載入並顯示產品
         function loadProducts() {
-            displayProducts();
-            displayProductSelection();
+            fetch('/api/products')
+            .then(res => res.json())
+            .then(data => {
+                products = {};
+                data.forEach(p => products[p.id] = p);
+                displayProducts();
+                displayProductSelection();
+            });
         }
         
         function displayProducts() {
@@ -803,10 +771,12 @@
         function deleteProduct(productId) {
             if (!confirm('確定要刪除此產品？')) return;
             
-            delete products[productId];
-            saveToLocalStorage();
-            displayProducts();
-            displayProductSelection();
+            fetch(`/api/products/${productId}`, { method: 'DELETE' })
+            .then(() => {
+                delete products[productId];
+                displayProducts();
+                displayProductSelection();
+            });
         }
         
         // 顯示產品選擇
@@ -867,101 +837,16 @@
                 return;
             }
             
-            const data = analyzeLocal(selected);
-            currentAnalysisResult = data;
-            displayAnalysis(data);
-        }
-        
-        // 本地分析函數（不需要後端）
-        function analyzeLocal(selected) {
-            if (Object.keys(requirements).length === 0) {
-                alert('請先設定營養素需求');
-                return null;
-            }
-            
-            // 計算總營養素含量（每日）
-            let total_nutrients = {};
-            let daily_cost = 0;
-            let product_details = [];
-            
-            selected.forEach(item => {
-                const productId = item.productId;
-                const dailyServing = item.dailyServing;
-                
-                if (products[productId]) {
-                    const product = products[productId];
-                    
-                    // 計算每日成本
-                    const product_daily_cost = product.pricePerServing * dailyServing;
-                    daily_cost += product_daily_cost;
-                    
-                    // 計算可吃天數
-                    const days_supply = dailyServing > 0 ? Math.floor(product.totalServings / dailyServing) : 0;
-                    
-                    product_details.push({
-                        name: product.name,
-                        pricePerServing: parseFloat(product.pricePerServing.toFixed(2)),
-                        dailyCost: parseFloat(product_daily_cost.toFixed(2)),
-                        dailyServing: dailyServing,
-                        daysSupply: days_supply
-                    });
-                    
-                    // 計算每日營養素總量
-                    for (let nutrient in product.nutrients) {
-                        const daily_amount = product.nutrients[nutrient] * dailyServing;
-                        total_nutrients[nutrient] = (total_nutrients[nutrient] || 0) + daily_amount;
-                    }
-                }
+            fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ products: selected })
+            })
+            .then(res => res.json())
+            .then(data => {
+                currentAnalysisResult = data;
+                displayAnalysis(data);
             });
-            
-            // 分析缺口和過量
-            const analysis = {
-                sufficient: {},
-                insufficient: {},
-                excessive: {}
-            };
-            
-            for (let nutrient in requirements) {
-                const requirement = requirements[nutrient];
-                const min_val = requirement.min;
-                const max_val = requirement.max;
-                const current = total_nutrients[nutrient] || 0;
-                
-                if (current < min_val) {
-                    analysis.insufficient[nutrient] = {
-                        current: parseFloat(current.toFixed(2)),
-                        required: min_val,
-                        gap: parseFloat((min_val - current).toFixed(2)),
-                        unit: requirement.unit
-                    };
-                } else if (current > max_val) {
-                    analysis.excessive[nutrient] = {
-                        current: parseFloat(current.toFixed(2)),
-                        max: max_val,
-                        excess: parseFloat((current - max_val).toFixed(2)),
-                        unit: requirement.unit
-                    };
-                } else {
-                    analysis.sufficient[nutrient] = {
-                        current: parseFloat(current.toFixed(2)),
-                        min: min_val,
-                        max: max_val,
-                        unit: requirement.unit
-                    };
-                }
-            }
-            
-            const completeness = Object.keys(requirements).length > 0 
-                ? (Object.keys(analysis.sufficient).length / Object.keys(requirements).length * 100)
-                : 0;
-            
-            return {
-                products: product_details,
-                daily_cost: parseFloat(daily_cost.toFixed(2)),
-                total_nutrients: total_nutrients,
-                analysis: analysis,
-                completeness: completeness
-            };
         }
         
         function displayAnalysis(data) {
@@ -1039,17 +924,24 @@
                 ...currentAnalysisResult
             };
             
-            solution.id = solutions.length + 1;
-            solution.created_at = new Date().toISOString();
-            solutions.push(solution);
-            saveToLocalStorage();
-            loadSolutions();
-            alert('方案已儲存！');
+            fetch('/api/solutions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(solution)
+            })
+            .then(() => {
+                loadSolutions();
+                alert('方案已儲存！');
+            });
         }
         
         // 載入並顯示方案
         function loadSolutions() {
-            displaySolutions(solutions);
+            fetch('/api/solutions')
+            .then(res => res.json())
+            .then(data => {
+                displaySolutions(data);
+            });
         }
         
         function displaySolutions(solutions) {
@@ -1061,33 +953,19 @@
             }
             
             let html = '<table class="solutions-table"><thead><tr>';
-            html += '<th>方案名稱</th><th>產品組合</th><th>每日成本</th><th>完整度</th><th>不足營養素</th><th>過量營養素</th><th>操作</th>';
+            html += '<th>方案名稱</th><th>產品組合</th><th>每日成本</th><th>完整度</th><th>不足項目</th><th>操作</th>';
             html += '</tr></thead><tbody>';
             
             solutions.forEach(s => {
-                // 處理不足的營養素
-                const insufficientItems = Object.entries(s.analysis.insufficient || {}).map(([name, info]) => {
-                    return `${name} (缺 ${info.gap} ${info.unit})`;
-                });
-                const insufficientDisplay = insufficientItems.length > 0 
-                    ? `<span style="color: #856404;">${insufficientItems.join('<br>')}</span>` 
-                    : '<span style="color: #28a745;">無</span>';
-                
-                // 處理過量的營養素
-                const excessiveItems = Object.entries(s.analysis.excessive || {}).map(([name, info]) => {
-                    return `${name} (超過 ${info.excess} ${info.unit})`;
-                });
-                const excessiveDisplay = excessiveItems.length > 0 
-                    ? `<span style="color: #dc3545;">${excessiveItems.join('<br>')}</span>` 
-                    : '<span style="color: #28a745;">無</span>';
+                const insufficientCount = Object.keys(s.analysis.insufficient).length;
+                const insufficientList = Object.keys(s.analysis.insufficient).join('、');
                 
                 html += `<tr>
                     <td><strong>${s.name}</strong></td>
-                    <td style="font-size: 0.9em;">${s.products.map(p => p.name).join('、')}</td>
-                    <td style="color: #667eea; font-weight: bold; white-space: nowrap;">NT$ ${s.daily_cost}/日</td>
-                    <td style="white-space: nowrap;">${s.completeness.toFixed(1)}%</td>
-                    <td style="font-size: 0.85em;">${insufficientDisplay}</td>
-                    <td style="font-size: 0.85em;">${excessiveDisplay}</td>
+                    <td>${s.products.map(p => p.name).join('、')}</td>
+                    <td style="color: #667eea; font-weight: bold;">NT$ ${s.daily_cost}/日</td>
+                    <td>${s.completeness.toFixed(1)}%</td>
+                    <td>${insufficientCount > 0 ? insufficientList : '無'}</td>
                     <td><button class="danger" onclick="deleteSolution(${s.id})">刪除</button></td>
                 </tr>`;
             });
@@ -1097,15 +975,7 @@
             // 找出最便宜的每日成本
             const minDailyCost = Math.min(...solutions.map(s => s.daily_cost));
             const bestSolution = solutions.find(s => s.daily_cost === minDailyCost);
-            
-            // 找出完整度最高的方案
-            const maxCompleteness = Math.max(...solutions.map(s => s.completeness));
-            const mostCompleteSolution = solutions.find(s => s.completeness === maxCompleteness);
-            
-            html += '<div style="margin-top: 15px; display: flex; gap: 20px; flex-wrap: wrap;">';
-            html += `<p style="color: #667eea; font-weight: bold; margin: 0;">💰 最低每日成本：NT$ ${minDailyCost}/日 (${bestSolution.name})</p>`;
-            html += `<p style="color: #28a745; font-weight: bold; margin: 0;">✅ 最高完整度：${maxCompleteness.toFixed(1)}% (${mostCompleteSolution.name})</p>`;
-            html += '</div>';
+            html += `<p style="margin-top: 15px; color: #667eea; font-weight: bold;">💡 最低每日成本：NT$ ${minDailyCost}/日 (${bestSolution.name})</p>`;
             
             container.innerHTML = html;
         }
@@ -1113,195 +983,8 @@
         function deleteSolution(solutionId) {
             if (!confirm('確定要刪除此方案？')) return;
             
-            solutions = solutions.filter(s => s.id !== solutionId);
-            saveToLocalStorage();
-            loadSolutions();
-        }
-        
-        // 匯出資料
-        function exportData() {
-            const data = {
-                requirements,
-                products,
-                solutions,
-                exportDate: new Date().toISOString(),
-                version: '1.0'
-            };
-            
-            const dataStr = JSON.stringify(data, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `nutrition-data-${new Date().toISOString().split('T')[0]}.json`;
-            link.click();
-            URL.revokeObjectURL(url);
-            
-            alert('資料已匯出！');
-        }
-        
-        // 匯入資料
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    if (confirm('匯入資料會覆蓋目前的所有資料，確定要繼續嗎？')) {
-                        requirements = data.requirements || {};
-                        products = data.products || {};
-                        solutions = data.solutions || [];
-                        
-                        saveToLocalStorage();
-                        
-                        // 重新載入顯示
-                        displayRequirements();
-                        displayProducts();
-                        displayProductSelection();
-                        loadSolutions();
-                        updateProductNutrientSelects();
-                        
-                        alert('資料匯入成功！');
-                        location.reload();
-                    }
-                } catch (error) {
-                    alert('匯入失敗：檔案格式錯誤');
-                    console.error(error);
-                }
-            };
-            reader.readAsText(file);
-            
-            // 清空 input 以便可以重複匯入同一檔案
-            event.target.value = '';
-        }
-        
-        // 清空所有資料
-        function clearAllData() {
-            if (confirm('確定要清空所有資料嗎？此操作無法復原！\n\n建議先匯出備份。')) {
-                if (confirm('再次確認：真的要刪除所有需求、產品和方案嗎？')) {
-                    localStorage.removeItem('nutritionOptimizerData');
-                    requirements = {};
-                    products = {};
-                    solutions = [];
-                    
-                    // 重新載入顯示
-                    displayRequirements();
-                    displayProducts();
-                    displayProductSelection();
-                    loadSolutions();
-                    
-                    alert('所有資料已清空！');
-                    location.reload();
-                }
-            }
-        }
-        
-        // 顯示單位對照表
-        function showUnitGuide() {
-            const guideHTML = `
-                <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;" onclick="this.remove()">
-                    <div style="background: white; padding: 30px; border-radius: 15px; max-width: 600px; max-height: 80vh; overflow-y: auto;" onclick="event.stopPropagation()">
-                        <h2 style="margin-top: 0; color: #667eea;">📖 營養素單位對照表</h2>
-                        
-                        <h3 style="color: #495057; margin-top: 20px;">📏 單位換算</h3>
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                            <p style="margin: 5px 0;"><strong>1 公克 (g)</strong> = 1,000 毫克 (mg)</p>
-                            <p style="margin: 5px 0;"><strong>1 毫克 (mg)</strong> = 1,000 微克 (μg)</p>
-                            <p style="margin: 5px 0; color: #dc3545;"><strong>⚠️ 常見錯誤：</strong>維他命 B12 標示 100 μg，誤寫成 100 mg（差了 1000 倍！）</p>
-                        </div>
-                        
-                        <h3 style="color: #495057; margin-top: 20px;">💊 常見營養素單位</h3>
-                        <table style="width: 100%; border-collapse: collapse;">
-                            <thead>
-                                <tr style="background: #667eea; color: white;">
-                                    <th style="padding: 10px; text-align: left;">營養素</th>
-                                    <th style="padding: 10px; text-align: left;">常用單位</th>
-                                    <th style="padding: 10px; text-align: left;">每日建議量參考</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 10px;">維他命 A</td>
-                                    <td style="padding: 10px;"><strong>μg 或 IU</strong></td>
-                                    <td style="padding: 10px;">600-900 μg</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 10px;">維他命 D</td>
-                                    <td style="padding: 10px;"><strong>μg 或 IU</strong></td>
-                                    <td style="padding: 10px;">10-20 μg (400-800 IU)</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 10px;">維他命 E</td>
-                                    <td style="padding: 10px;"><strong>mg 或 IU</strong></td>
-                                    <td style="padding: 10px;">12-15 mg</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 10px;">維他命 C</td>
-                                    <td style="padding: 10px;"><strong>mg</strong></td>
-                                    <td style="padding: 10px;">100-2000 mg</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 10px;">維他命 B1</td>
-                                    <td style="padding: 10px;"><strong>mg</strong></td>
-                                    <td style="padding: 10px;">1.2-100 mg</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 10px;">維他命 B2</td>
-                                    <td style="padding: 10px;"><strong>mg</strong></td>
-                                    <td style="padding: 10px;">1.3-100 mg</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 10px;">維他命 B6</td>
-                                    <td style="padding: 10px;"><strong>mg</strong></td>
-                                    <td style="padding: 10px;">1.5-100 mg</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 10px;">維他命 B9 (葉酸)</td>
-                                    <td style="padding: 10px;"><strong>μg</strong></td>
-                                    <td style="padding: 10px;">400-1000 μg</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 10px;">維他命 B12</td>
-                                    <td style="padding: 10px;"><strong>μg</strong></td>
-                                    <td style="padding: 10px;">2.4-100 μg</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 10px;">鈣</td>
-                                    <td style="padding: 10px;"><strong>mg</strong></td>
-                                    <td style="padding: 10px;">1000-2500 mg</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 10px;">鎂</td>
-                                    <td style="padding: 10px;"><strong>mg</strong></td>
-                                    <td style="padding: 10px;">320-420 mg</td>
-                                </tr>
-                                <tr style="border-bottom: 1px solid #dee2e6;">
-                                    <td style="padding: 10px;">鋅</td>
-                                    <td style="padding: 10px;"><strong>mg</strong></td>
-                                    <td style="padding: 10px;">8-40 mg</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 10px;">鐵</td>
-                                    <td style="padding: 10px;"><strong>mg</strong></td>
-                                    <td style="padding: 10px;">8-45 mg</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        
-                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #ffc107;">
-                            <p style="margin: 0; color: #856404;"><strong>💡 小技巧：</strong>不確定單位？查看產品包裝上的「營養標示」，通常會標示單位。</p>
-                        </div>
-                        
-                        <button onclick="this.parentElement.parentElement.remove()" style="width: 100%; margin-top: 20px; padding: 12px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">
-                            關閉
-                        </button>
-                    </div>
-                </div>
-            `;
-            document.body.insertAdjacentHTML('beforeend', guideHTML);
+            fetch(`/api/solutions/${solutionId}`, { method: 'DELETE' })
+            .then(() => loadSolutions());
         }
     </script>
 </body>
